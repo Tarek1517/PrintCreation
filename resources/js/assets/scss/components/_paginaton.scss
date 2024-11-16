@@ -1,0 +1,27 @@
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center     ;
+    &__right {
+        &__list {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            &__item {
+                &--active {
+                    button {
+                        @apply bg-common border-common;
+                        color: #fff;
+                    }
+                }
+
+                button {
+                    @apply rounded-full;
+                }
+                &__link {
+                    @apply w-8 h-8 rounded-full text-white flex items-center justify-center border border-common;
+                }
+            }
+        }
+    }
+}

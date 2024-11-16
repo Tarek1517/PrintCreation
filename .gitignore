@@ -1,0 +1,40 @@
+vendor/
+!public/vendor
+node_modules/
+npm-debug.log
+.php_cs.cache
+
+# Laravel 5 & Lumen specific
+public/storage
+public/dist
+public/hot
+storage/*.key
+storage/clockwork
+.env.*.php
+.env.php
+.env
+.env-production
+Homestead.yaml
+Homestead.json
+.phpunit.result.cache
+coverage/**
+
+# Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
+.rocketeer/
+
+# Phpstorm
+.idea
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+.DS_Store
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+storage/app/*
+/tmp/
+.vscode/settings.json
+.php-cs-fixer.cache
+1
+Grepper Ad✕

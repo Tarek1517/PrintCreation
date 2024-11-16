@@ -1,0 +1,7 @@
+.overlay {
+    @apply relative overflow-hidden;
+    &::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 bottom-0 w-full h-full bg-primary bg-opacity-80;
+    }
+}

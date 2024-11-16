@@ -1,0 +1,10 @@
+.shop-links {
+    margin-top: -360px;
+    transition: all ease-in-out 0.3s;
+    opacity: 0;
+    &--active {
+        margin-top: 0;
+        transition: all ease-in-out 0.3s;
+        opacity: 1;
+    }
+}

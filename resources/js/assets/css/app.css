@@ -1,0 +1,6 @@
+@import url('../fonts/open-sans.scss');
+@import url('../scss/app.scss');
+
+:root {
+    --toastify-color-dark: #071739;
+}
