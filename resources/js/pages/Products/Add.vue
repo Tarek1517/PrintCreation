@@ -1,6 +1,6 @@
 <script setup>
     import  SummernoteEditor  from 'vue3-summernote-editor';
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, computed } from 'vue'
     import  useAxios  from '@/composables/useAxios';
     import { useRouter } from 'vue-router';
     import { toast } from "vue3-toastify";
@@ -67,20 +67,25 @@
         form.value.images.splice(index, 1);
     };
 
-
+	const variant = ref(false);
+	const status = ref(true);
+	const attachment = ref(false);
     const form = ref({
         title: null,
         price: null,
         category_id: null,
         brand_id: null,
         video_url: null,
-        sku: null,
         discount_price:null,
-        stock:1,
+        stock:5,
         cover_image: null,
         hover_image: null,
         product_info: null,
         specification:null,
+		status: computed(() => (status.value ? 1 : 0)),
+		is_variant: computed(() => (variant.value ? 1 : 0)),
+		attachment:  computed(() => (attachment.value ? 1 : 0)),
+		attachment_type: null,
         images: [],
         key_features: [
             {
@@ -123,29 +128,71 @@
         <div class="p-4 shadow-lg rounded-lg">
             <h3 class="text-sm mb-5">Add New Product</h3>
             <div class="flex flex-wrap">
+				
                 <div class="w-1/2 flex flex-col gap-3 px-2">
+				<div class="flex flex-wrap">
+				<div class="w-1/3 px-2">
+					<label for="Status"  class="flex items-center gap-2 pt-3 cursor-pointer">
+						<input id="Status" type="checkbox"  v-model="status" class="peer hidden" />
+						<span class=" w-4 h-4 border border-gray-600 peer-checked:bg-common peer-checked:border-common flex items-center justify-center text-white">
+							<Icon name="material-symbols-light:check-rounded" />
+						</span>
+						<span class="text-sm block">Status</span>
+					</label>	
+				</div>
+				<div class="w-1/3 px-2">
+					<label for="Attachment"  class="flex items-center gap-2 pt-3 cursor-pointer">
+						<input id="Attachment" type="checkbox"  v-model="attachment" class="peer hidden" />
+						<span class=" w-4 h-4 border border-gray-600 peer-checked:bg-common peer-checked:border-common flex items-center justify-center text-white">
+							<Icon name="material-symbols-light:check-rounded" />
+						</span>
+						<span class="text-sm block">Attachment</span>
+					</label>	
+				</div>
+				<div class="w-1/3 px-2">
+					<label for="Variant"  class="flex items-center gap-2 pt-3 cursor-pointer">
+						<input id="Variant" type="checkbox"  v-model="variant" class="peer hidden" />
+						<span class=" w-4 h-4 border border-gray-600 peer-checked:bg-common peer-checked:border-common flex items-center justify-center text-white">
+							<Icon name="material-symbols-light:check-rounded" />
+						</span>
+						<span class="text-sm block">Variant</span>
+					</label>
+				</div>
+			<div class="w-full mt-5 px-2" v-if="attachment">
+					<label class="block mb-2">Attachment Type</label>
+					<ul class="flex  items-center">
+						<li>
+							<input type="radio" id="text" name="attachment-type" class="peer hidden" value="text" v-model="form.attachment_type">
+							<label  for="text" class="p-2 cursor-pointer border border-r-0 border-gray-500 block peer-checked:bg-common w-40 text-center">Text</label>
+						</li>
+						<li>
+							<input type="radio" id="image" name="attachment-type" class="peer hidden" value="image" v-model="form.attachment_type">
+							<label for="image" class="p-2 cursor-pointer border border-gray-500 block peer-checked:bg-common w-40 text-center">Image</label>
+						</li>
+						<li>
+							<input type="radio" id="both" name="attachment-type" class="peer hidden" value="both" v-model="form.attachment_type">
+							<label for="both" class="p-2 cursor-pointer border border-l-0 border-gray-500 block peer-checked:bg-common w-40 text-center">Both Text & Image</label>
+						</li>
+					</ul>	
+				</div>
+			</div>
                     <div class="w-full px-2">
                         <label for="title" class="text-xs mb-1">Product Title</label>
                         <input type="text" class="p-2 bg-secondary  border border-common w-full rounded" v-model="form.title" />
                     </div>
                     <div class="w-full flex flex-wrap">
-                        <div class="w-1/2 px-2">
+                        <div class="w-1/3 px-2">
                             <label for="price" class="text-xs mb-1">Price</label>
                             <input type="number" class="p-2 bg-secondary  border border-common w-full rounded" v-model="form.price">
                         </div>
-                        <div class="w-1/2 px-2">
+                        <div class="w-1/3 px-2">
                             <label for="discount" class="text-xs mb-1">Discount Price</label>
                             <input type="number" class="border border-primary p-2 rounded-md w-full" v-model="form.discount_price">
                         </div>
-                        <div class="w-1/2 px-2">
-                            <label for="sku" class="text-xs mb-1">Sku</label>
-                            <input type="text" class="border border-primary p-2 rounded-md w-full" v-model="form.sku">
-                        </div>
-                        <div class="w-1/2 px-2">
-                            <label for="discount" class="text-xs mb-1">Stock</label>
-                            <input type="number" class="border border-primary p-2 rounded-md w-full" v-model="form.stock">
-                        </div>
-                        
+                        <div class="w-1/3 px-2" v-if="!variant">
+							<label for="discount" class="text-xs mb-1">Stock</label>
+							<input type="number" class="border border-primary p-2 rounded-md w-full" v-model="form.stock">
+						</div>
                     </div> 
                     <div class="w-full flex items-center space-x-5 px-2">
                         <div class="w-1/2">
@@ -171,29 +218,6 @@
                             </template>
                             </Select>
                         </div>
-                      <div class="w-1/2">
-                        <label for="category" class="text-xs mb-1">Brand</label>
-                        <Select
-                            label="name"
-                            v-if="brands"
-                            :options="brands"
-                            :reduce="item => item.id"
-                            :searchable="true"
-                            v-model="form.brand_id"
-                            placeholder="Set Brand"
-                        >
-                          <template v-slot:option="option">
-                            <li class="flex items-start py-1">
-                              <div class="flex items-center justify-between w-full">
-                                <div class="me-1 flex items-center gap-2">
-                                  <img :src="option?.logo" class="w-12 h-12">
-                                  <h6 class="mb-25">{{ option?.name }}</h6>
-                                </div>
-                              </div>
-                            </li>
-                          </template>
-                        </Select>
-                      </div>
                     </div>   
                     <div class="w-full px-2">
                         <label for="title" class="text-xs mb-1">Video Url (Optional)</label>

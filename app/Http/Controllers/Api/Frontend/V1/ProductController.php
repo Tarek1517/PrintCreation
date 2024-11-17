@@ -31,12 +31,7 @@ class ProductController extends Controller
             return $query->where('brand_id', $categoryId);
         })
         ->latest()
-        ->take(90)
-        ->get();
-
-        foreach($products as $product){
-            $product->key_features = json_decode($product->key_features);
-        }
+        ->paginate(2);
         return ProductListResource::collection($products);
     }
 

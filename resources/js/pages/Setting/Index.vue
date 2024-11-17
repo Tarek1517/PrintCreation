@@ -25,6 +25,8 @@ const getAllSetting = async() => {
     setting.value.linkedin_link = response.data.linkedin_link;
     setting.value.app_name = response.data.app_name;
     setting.value.app_url = response.data.app_url;
+	setting.value.home_products = response.data.home_products;
+	setting.value.top_categories = response.data.top_categories;
 }
 
 // get Category
@@ -67,12 +69,15 @@ const getPage = async() => {
 const tabs = [
     'App',
     'Header',
+	'Home',
     'Footer',
 ];
 const activeTab = ref(0);
 
 const setting = ref({
     header_categories: [],
+	home_products: null,
+	top_categories: null,
     currency:null,
     currency_symbol: null,
     email: null,
@@ -287,7 +292,56 @@ onMounted(() => {
                                     <Button @click="onSubmit" class="rounded">Save Header Setting</Button>
                                 </div>
                             </div>
-                            <div class="w-full " v-if="activeTab === 2">
+							<div class="w-full flex flex-wrap gap-4" v-if="activeTab === 2">
+								<div class="w-full">
+                                    <label for="header-category" class="text-xs mb-1 block">Select Our Products</label>
+                                    <Select
+                                        v-if="products"
+                                        label="title"
+                                        :options="products?.data"
+                                        :reduce="item => item.id"
+                                        v-model="setting.home_products"
+                                        multiple
+                                    >
+                                    <template v-slot:option="option">
+                                        <li class="flex items-start py-1">
+                                            <div class="flex items-center justify-between w-full">
+                                                <div class="me-1 flex items-center gap-2">
+                                                    <img :src="option?.cover_image" class="w-12 h-12">
+                                                    <h6 class="mb-25">{{ option?.title }}</h6>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </template>
+                                    </Select>
+                                </div>
+								 <div class="w-full">
+                                    <label for="header-category" class="text-xs mb-1 block">Top Categories</label>
+                                    <Select
+                                        v-if="categories"
+                                        label="name"
+                                        :options="categories"
+                                        :reduce="item => item.id"
+                                        v-model="setting.top_categories"
+                                        multiple
+                                    >
+                                    <template v-slot:option="option">
+                                        <li class="flex items-start py-1">
+                                            <div class="flex items-center justify-between w-full">
+                                                <div class="me-1 flex items-center gap-2">
+                                                    <img :src="option?.icon" class="w-12 h-12">
+                                                    <h6 class="mb-25">{{ option?.name }}</h6>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </template>
+                                    </Select>
+                                </div>
+                                <div class="w-full">
+                                    <Button @click="onSubmit" class="rounded">Save Setting</Button>
+                                </div>
+							</div>
+                            <div class="w-full " v-if="activeTab === 3">
                                 <div class="flex items-center justify-between mb-2">
                                     <h3>Footer</h3>
                                     <button class="text-xs  bg-common px-3 py-1.5 rounded" @click="openModal">Add New</button>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('product_stock_id')->constrained('product_stocks')->onDelete('cascade');
             $table->integer('quantity')->nullable();
+			$table->json('attachment')->nullabe();
             $table->timestamps();
         });
     }

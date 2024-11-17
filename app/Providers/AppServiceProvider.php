@@ -43,14 +43,6 @@ class AppServiceProvider extends ServiceProvider
         Builder::macro('sortBy', function (){
             return $this->orderBy(request()->input('orderBy') ?? 'id', request()->input('sortBy') ?? 'desc');
         });
-
-        Builder::macro('pagination', function ($simple=false){
-            $pages = $simple ? $this->simplePaginate(request()->input('perPage') ?? 10) : $this->paginate(request()->input('perpage') ?? 10);
-            if(request()->has('onlyData')){
-                return $this->get();
-            }
-            return $pages->withQueryString();
-        });
     }
 
     /**

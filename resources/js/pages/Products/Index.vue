@@ -95,10 +95,11 @@ onMounted(() => {
                   </th>
                   <th scope="col" class="px-4 py-3">Product</th>
                   <th scope="col" class="px-4 py-3">Category</th>
-                  <th scope="col" class="px-4 py-3">Brand</th>
                   <th scope="col" class="px-4 py-3">Stock</th>
                   <th scope="col" class="px-4 py-3">Price</th>
-                  <th scope="col" class="px-4 py-3">Sales</th>
+				  <th scope="col" class="px-4 py-3">Attachment</th>
+				  <th scope="col" class="px-4 py-3">Attachment Type</th>
+				  <th scope="col" class="px-4 py-3">Status</th>
                   <th scope="col" class="px-4 py-3">Action</th>
                 </tr>
                 </thead>
@@ -117,29 +118,17 @@ onMounted(() => {
                   <td class="px-4 py-2">
                     <span class="bg-primary-100  text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">{{ product?.category?.name }}</span>
                   </td>
-                  <td class="px-4 py-2">
-                    <span class="bg-primary-100  text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">{{ product?.brand?.name }}</span>
-                  </td>
+                 
                   <td class="px-4 py-2 font-medium">
-                    <div v-if="product?.stock <= 10" class="flex items-center">
-                      <div class="inline-block w-4 h-4 mr-2 bg-red-700 rounded-full"></div>
-                      {{ product?.stock }}
-                    </div>
-                    <div v-else-if="product?.stock >= 10 && product?.stock <= 30" class="flex items-center">
-                      <div class="inline-block w-4 h-4 mr-2 bg-yellow-300 rounded-full"></div>
-                      {{ product?.stock }}
-                    </div>
-                    <div v-else class="flex items-center">
-                      <div class="inline-block w-4 h-4 mr-2 bg-green-400 rounded-full"></div>
-                      {{ product?.stock }}
-                    </div>
+                    {{ product?.stock }}
                   </td>
                   <td class="px-4 py-2 font-medium ">
                     <p v-if="product?.discount_price"> <strike class="mr-1 text-red-500">৳{{ product?.price }}</strike>৳{{ product?.discount_price }}</p>
                     <p v-else>৳{{ product?.price }}</p>
                   </td>
-                  <td class="px-4 py-2 font-medium">0</td>
-
+                  <td class="px-4 py-2 font-medium uppercase">{{product?.attachment ? 'Yes' : 'No'}}</td>
+                  <td class="px-4 py-2 font-medium uppercase">{{product?.attachment_type ? product?.attachment_type : 'No'}}</td>
+                  <td class="px-4 py-2 font-medium uppercase">{{product?.status ?'Active' : 'Inactive'}}</td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
   <!--                      <RouterLink :to="`/product-detail/${product?.slug}`" class="w-8 h-8 rounded-md flex items-center justify-center bg-green-500 border border-green-900">-->

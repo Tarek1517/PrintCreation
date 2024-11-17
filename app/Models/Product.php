@@ -14,6 +14,12 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+	protected $appends = ['cover_image_url'];
+    public function getCoverImageUrlAttribute()
+    {
+        return $this->cover_image ? env('APP_URL') . $this->cover_image : null;
+    }
+
     public function creator() :BelongsTo 
     {
         return $this->belongsTo(Admin::class, 'created_by');
@@ -39,10 +45,6 @@ class Product extends Model
     }
 
 
-    public function product_variants()
-    {
-        return $this->hasMany(ProductVariant::class);
-    }
 
     public function productVariationOptions()
     {

@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $products = Product::query()
-        ->with('category', 'brand', 'stocks')
+        ->with('category:id,name')
         ->paginate(40);
         return ProductListResource::collection($products);
     }
@@ -42,6 +42,7 @@ class ProductController extends Controller
         $data = $request->validated();
 
         $data['slug'] = Str::slug($data['title']);
+		$data['sku'] = Str::random(10);
         if(isset($data['key_features'])){
             $data['key_features'] = json_encode($data['key_features']);
         }

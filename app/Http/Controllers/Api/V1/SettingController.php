@@ -23,25 +23,34 @@ class SettingController extends Controller
         if($categoryIds !== null && count($categoryIds) > 0){
             $categories = Category::whereIn('id', $categoryIds??[])
             ->select('id','slug', 'icon', 'name', 'parent_id')
-            ->with('children')
+            ->with('children:id,name,slug')
             ->orderBy('order_number')
             ->get();
         }
 
-        $pageIds = json_decode(getSetting('header_pages'));
-        $pages = [];
-        if($pageIds !== null && count($pageIds) > 0){
-            $pages = Page::whereIn('id', $pageIds??[])->select('slug', 'title')->get();
+
+		$topCategoryIds = json_decode(getSetting('top_categories'));
+        $topCategories = [];
+        if($topCategoryIds !== null && count($topCategoryIds) > 0){
+            $topCategories = Category::whereIn('id', $topCategoryIds??[])
+            ->select('id','slug', 'icon', 'name')
+			->withCount('products')
+            ->orderBy('order_number')
+            ->get();
         }
 
-        $allProducts = Product::query()->select('slug', 'title', 'cover_image')->get();
-
+		$homeProductIds = json_decode(getSetting('home_products'));
+		$homeProducts = [];
+		if($homeProductIds !== null && count($homeProductIds) > 0){
+            $homeProducts = Product::whereIn('id', $homeProductIds??[])
+            ->select('slug', 'title', 'cover_image', 'price', 'discount_price')
+            ->get();
+        }
 
         $footerColumns = Footer::query()->orderBy('order_number')->get();
         foreach( $footerColumns as $column){
             $footerPageIds = json_decode($column->pages);
             $footerPages = Page::query()->whereIn('id', $footerPageIds)->select('slug', 'title')->get();
-            
             $column['pages'] = $footerPages;
         }
 
@@ -49,8 +58,9 @@ class SettingController extends Controller
             'currency' =>  getSetting('currency'),
             'currency_symbol' => getSetting('currency_symbol'),
             'header_categories' => $categories,
-            'header_pages' => $pages,
-            'all_products' => $allProducts,
+			'home_products' => $homeProducts,
+			'top_categories' => $topCategories,
+            'all_products' =>Product::query()->select('slug', 'title', 'cover_image', 'price', 'discount_price')->paginate(2),
             'all_categories' => Category::query()->select('slug', 'name', 'id')->get(),
             'footer_columns' => $footerColumns,
             'app_name' => getSetting('app_name'),
@@ -62,8 +72,6 @@ class SettingController extends Controller
             'youtube_link' => getSetting('youtube_link'),
             'instagram_link' => getSetting('instagram_link'),
             'linkedin_link' => getSetting('linkedin_link'),
-            'delivery_charge_inside_dhaka' => getSetting('delivery_charge_inside_dhaka'),
-            'delivery_charge_outside_dhaka' => getSetting('delivery_charge_outside_dhaka'), 
         ];
         return response()->json($settings);
     }
@@ -71,9 +79,8 @@ class SettingController extends Controller
     {
         $settings = [
             'header_categories' => json_decode(getSetting('header_categories')),
-            'header_pages' => json_decode(getSetting('header_pages')),
-            'discover_categories' => json_decode(getSetting('discover_categories')),
-            'home_content' => getSetting('home_content'),
+            'top_categories' => json_decode(getSetting('top_categories')),
+            'home_products' => json_decode(getSetting('home_products')),
             'currency' => getSetting('currency'),
             'currency_symbol' => getSetting('currency_symbol'),
             'app_name' => getSetting('app_name'),
@@ -86,10 +93,6 @@ class SettingController extends Controller
             'youtube_link' => getSetting('youtube_link'),
             'instagram_link' => getSetting('instagram_link'),
             'linkedin_link' => getSetting('linkedin_link'),
-            'featured_categories' => json_decode(getSetting('featured_categories')),
-            'online_exclusive_products' => json_decode(getSetting('online_exclusive_products')),
-            'delivery_charge_inside_dhaka' => getSetting('delivery_charge_inside_dhaka'),
-            'delivery_charge_outside_dhaka' => getSetting('delivery_charge_outside_dhaka'),
         ];
 
         return response()->json($settings);

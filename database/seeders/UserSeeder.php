@@ -15,14 +15,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(500)->create();
+        User::factory(10)->create();
 
         DB::table('users')->insert([
             [
                 'name' => 'Tushar - Customer',
-                'email' => 'customer@customer.com',
+                'email' => 'tushar@tushar.com',
                 'phone' => '888 999 888',
-                'password' => Hash::make('customer'),
+                'password' => Hash::make('tushar'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

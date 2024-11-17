@@ -9,8 +9,8 @@ const isForm = ref(false);
   const adminStore = useAdminStore();
 //Login
 const state = ref({
-  email: 'tushar@admin.com',
-  password: 'tushar',
+  email: null,
+  password: null,
 });
 
 const loading = ref(false);
@@ -41,21 +41,21 @@ onMounted(() => {
   <Loading :value="loading" />
   <div class="w-full h-screen bg-secondary flex items-center justify-between relative overflow-hidden">
     <div
-        class="absolute left-1/2 -translate-x-1/2 w-full mx-auto max-w-xl px-4 bg-primary shadow rounded p-5 border border-slate-600 text-gray-300 transition-all ease-in-out duration-700"
+        class="absolute left-1/2 -translate-x-1/2 w-full mx-auto max-w-xl px-4 bg-primary  rounded p-5 shadow-lg transition-all ease-in-out duration-700"
         :class="{'top-1/2 -translate-y-1/2' : isForm, 'top-[1200px]' : !isForm}">
 
-      <h3 class="text-center font-medium text-3xl uppercase mb-3">Sign in To Dashboard{{ user }}</h3>
+      <h3 class="text-center font-medium text-3xl uppercase mb-3">Sign in To Dashboard</h3>
       <div class="flex flex-col items-center gap-5">
         <div class="w-full">
           <label for="email" class="flex items-center gap-2">Email</label>
-          <input type="text" class="rounded-md w-full text-gray-300" v-model="state.email">
+          <input type="text" class="rounded-md w-full" v-model="state.email">
         </div>
         <div class="w-full">
           <label for="password" class="flex items-center gap-2">Password</label>
-          <input type="text" v-model="state.password" class="w-full text-gray-300 rounded-md">
+          <input type="text" v-model="state.password" class="w-full  rounded-md">
         </div>
         <div class="w-full">
-          <button @click="handleLogin" class="bg-common text-center py-2 w-full text-white rounded-md">Access Dashboard</button>
+          <button @click="handleLogin" class="bg-common text-center py-2 w-full  rounded-md">Access Dashboard</button>
         </div>
       </div>
     </div>
