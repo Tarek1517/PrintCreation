@@ -171,6 +171,16 @@ const router = createRouter({
       name: 'EditShipping',
       component: () => import('@/pages/Shipping/Edit.vue')
     },
+	{
+	 	path: '/courier-company',
+		name: 'CourierCompany',
+		component: () => import('@/pages/Courier/Index.vue')
+	},
+	{
+	 	path: '/create-courier-company',
+		name: 'CreateCourierCompany',
+		component: () => import('@/pages/Courier/Add.vue')
+	},
     {
       path: '/slider',
       name: 'Slider',

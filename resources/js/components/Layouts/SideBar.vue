@@ -96,6 +96,12 @@ const props = defineProps({
             <span class="  text-sm font-normal transition-all ease-in-out duration-300">Shipping</span>
           </RouterLink>
         </li>
+		<li>
+          <RouterLink to="/courier-company" class="group flex items-center gap-3  rounded-lg transition-all ease-in-out duration-300 cursor-pointer relative" @click="isOrderLinks = !isOrderLinks">
+            <Icon   name="hugeicons:shopping-bag-02" class="text-lg text-pink-500" />
+            <span class="  text-sm font-normal transition-all ease-in-out duration-300">Courier Company</span>
+          </RouterLink>
+        </li>
             <!-- Order End -->
 
             <!-- Users  -->

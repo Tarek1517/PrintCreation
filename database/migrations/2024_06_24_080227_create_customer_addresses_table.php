@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('shipping_area_id')->constrained('shipping_areas')->cascadeOnDelete()->cascadeOnUpdate();  
-            $table->string('title')->default('Untitled');
             $table->string('country')->index();
             $table->string('city')->index();
             $table->string('address');

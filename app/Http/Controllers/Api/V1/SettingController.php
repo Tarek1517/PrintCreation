@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\Footer;
+use App\Models\Slider;
 
 use function App\Http\Helpers\getSetting;
 
@@ -58,9 +59,10 @@ class SettingController extends Controller
             'currency' =>  getSetting('currency'),
             'currency_symbol' => getSetting('currency_symbol'),
             'header_categories' => $categories,
+			'hero_slider' => Slider::select('url','image','order_number')->orderBy('order_number')->get(),
 			'home_products' => $homeProducts,
 			'top_categories' => $topCategories,
-            'all_products' =>Product::query()->select('slug', 'title', 'cover_image', 'price', 'discount_price')->paginate(2),
+            'all_products' =>Product::query()->select('slug', 'title', 'cover_image', 'price', 'discount_price')->latest()->paginate(16),
             'all_categories' => Category::query()->select('slug', 'name', 'id')->get(),
             'footer_columns' => $footerColumns,
             'app_name' => getSetting('app_name'),

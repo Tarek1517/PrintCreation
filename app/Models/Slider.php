@@ -11,4 +11,10 @@ class Slider extends Model
 
 
     protected $guarded = ['id'];
+
+	protected $appends = ['image_url'];
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? env('APP_URL') . $this->image : null;
+    }
 }

@@ -24,7 +24,7 @@ class CategoryController extends Controller
         $categories = Category::query()
         ->with('parent')
         ->orderBy('order_number')
-        ->pagination(); 
+        ->paginate('20'); 
 
         return CategoryListResource::collection($categories);
     }

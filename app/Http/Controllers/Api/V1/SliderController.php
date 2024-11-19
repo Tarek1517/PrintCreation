@@ -90,6 +90,7 @@ class SliderController extends Controller
     public function destroy(string $id)
     {
         $slider = Slider::findOrFail($id);
+
         if($slider){
             if (File::exists(public_path($slider->image))) {
                 File::delete(public_path($slider->image));

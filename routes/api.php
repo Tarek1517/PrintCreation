@@ -21,18 +21,17 @@ use App\Http\Controllers\Api\V1\ProductReviewController;
 use App\Http\Controllers\Api\Frontend\V1\HomeController;
 use App\Http\Controllers\Api\Frontend\V1\ProductController as FrontendProductController;
 use App\Http\Controllers\Api\Frontend\V1\CustomerController as FrontendCustomerController;
-use App\Http\Controllers\Auth\Customer\LoginController as CustomerLoginController;
-use App\Http\Controllers\Auth\Customer\RegisterController;
+use App\Http\Controllers\Api\V1\CourierCompanyController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Auth\Admin\AuthController as AdminAuthController;
-
+use App\Http\Controllers\Auth\Customer\AuthController;
 
 //Mobile App Api
 // Authentication
-Route::post('/customer/login', [CustomerLoginController::class, 'login']);
-Route::post('/customer/register', [RegisterController::class, 'register']);
+Route::post('/customer/login', [AuthController::class, 'login']);
+Route::post('/customer/register', [AuthController::class, 'register']);
 
 Route::get('/print-creation', [SettingController::class, 'getGlobalSetting']);
 Route::prefix('frontend/v1')->middleware('throttle:api')->group( function() {
@@ -48,6 +47,7 @@ Route::prefix('frontend/v1')->middleware('throttle:api')->group( function() {
     Route::get('/get-search-product', [FrontendProductController::class, 'getSearchProduct']);
 
     Route::post('/save-request', [OrderController::class, 'saveOrderRequest']);
+	
     
     Route::get('/get-all-category-list', [CategoryController::class, 'getAllCategoryList']);
     Route::get('/get-all-brand-list', [BrandController::class, 'getAllBrandList']);
@@ -55,6 +55,7 @@ Route::prefix('frontend/v1')->middleware('throttle:api')->group( function() {
     Route::post('/save-customer-address', [AddressController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/get-all-shipping-area-list', [ShippingAreaController::class, 'getAllShippingList']);
     Route::apiResource('address', AddressController::class)->middleware('auth:sanctum');
+    Route::apiResource('courier-company', CourierCompanyController::class);
     Route::apiResource('customer', FrontendCustomerController::class)->middleware('auth:sanctum');
     Route::get('/show-customer-order/{id}', [FrontendCustomerController::class, 'showCustomerOrder']);
     Route::get('/get-customer-order', [FrontendCustomerController::class, 'getCustomerOrder']);
@@ -63,11 +64,8 @@ Route::prefix('frontend/v1')->middleware('throttle:api')->group( function() {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-//Mobile App Api end
 
 
-
-// Dashboard Route
 Route::prefix('admin')->group( function() {
     Route::post('/create', [AdminAuthController::class, 'createAdmin']);
     Route::post('/login', [AdminAuthController::class, 'login']);
@@ -109,6 +107,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api', 'type.admin'])-
         'page' => PageController::class,
         'shipping-area' => ShippingAreaController::class,
         'home-section' => HomeSectionController::class,
+		'courier-company' => CourierCompanyController::class,
         'footer' => FooterController::class,
     ]);
 });

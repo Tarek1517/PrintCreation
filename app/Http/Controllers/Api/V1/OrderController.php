@@ -16,6 +16,8 @@ use App\Models\ProductStock;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Stripe\Stripe;
+use Illuminate\Support\Facades\DB;
 
 
 class OrderController extends Controller
@@ -45,44 +47,91 @@ class OrderController extends Controller
 
    
     public function store(OrderStoreRequest $request)
-    {
-        $data = $request->validated();      
-        
-        if(isset($data['address_id'])){
-            $address = CustomerAddress::where('id', $data['address_id'])->with('area')->first();
-            $grandTotal = $data['grand_total'] + $address->area->delevery_charge;
-            $data['grand_total'] = $grandTotal;
-        }
+	{
+		$data = $request->validated();
+		Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
-        if(isset($data['delivery_charge'])){
-            $data['grand_total'] = $data['sub_total'] + $data['delivery_charge'];
-        }
+		try {
+			$lineItems = [];
+			foreach ($data['order_items'] as $item) {
+				$lineItems[] = [
+					'price_data' => [
+						'currency' => $data['currency'] ?? 'usd', 
+						'unit_amount' => $item['product']['price'] * 100, 
+						'product_data' => [
+							'name' => $item['product']['title'],
+						],
+					],
+					'quantity' => $item['selectSku']['selectQty'], // Use the requested quantity
+				];
+			}
+			$session = \Stripe\Checkout\Session::create([
+				'line_items' => $lineItems,
+				'mode' => 'payment',
+				'success_url' => env('FRONTEND_URL') . '/order-success?session_id={CHECKOUT_SESSION_ID}',
+				'cancel_url' => env('FRONTEND_URL') . '/order-cancel?session_id={CHECKOUT_SESSION_ID}',
+			]);
+		}catch (\Exception $e) {
+			return response()->json(['error' => 'Stripe error: ' . $e->getMessage()], 500);
+		}
+		DB::beginTransaction();
+		try {
+			// Save address
+			$address = CustomerAddress::create([
+				'shipping_area_id' => $data['shipping_area_id'],
+				'user_id' => $data['user_id'],
+				'country' => $data['country'],
+				'city' => $data['city'],
+				'address' => $data['address'],
+			]);
 
-        $data['order_date'] = Carbon::now();
-        $data['order_id'] = '#'.rand(100000000000, 999999999999);
-        $order = Order::create($data);
-        $orderDetails = [];
-        
-        foreach($data['order_items'] as $item)
-        {
-            $orderDetails[] = [
-                'order_id' => $order->id,
-                'product_id' => $item['product']['id'],
-                'quantity' => $item['selectSku']['selectQty'],
-                'product_stock_id' => isset($item["selectSku"]["id"]) ?  $item["selectSku"]["id"] : NULL,
-            ];
+			// Create order
+			$data['address_id'] = $address->id;
+			$data['grand_total'] = $data['sub_total'] + ($data['delivery_charge'] ?? 0);
+			$data['payment_status'] = 'paid';
+			$data['order_date'] = Carbon::now();
+			$data['order_code'] = '#' . strtoupper(uniqid());
+			$order = Order::create($data);
 
-            if(isset($item["selectSku"]["id"])){
-                $stock = ProductStock::where('id', $item["selectSku"]["id"])->first();
-                $stock->stock = $stock->stock - $item["selectSku"]["selectQty"];
-                $stock->save();
-            }
-        }
+			// Save order details and update stocks
+			$orderDetails = [];
+			
+			$stockIds = array_column($data['order_items'], 'selectSku.id');
+			if($stockIds){
+				$stocks = ProductStock::whereIn('id', $stockIds)->get()->keyBy('id');
+			}
+			
+			foreach ($data['order_items'] as $item) {
+				$orderDetails[] = [
+					'order_id' => $order->id,
+					'product_id' => $item['product']['id'],
+					'quantity' => $item['selectSku']['selectQty'],
+					'attachment' => json_encode($item['attachments']),
+					'product_stock_id' => $item['selectSku']['id'] ?? null,
+				];
+				if($stockIds){
+					if (isset($stocks[$item['selectSku']['id']])) {
+						$stock = $stocks[$item['selectSku']['id']];
+						if ($stock->stock < $item['selectSku']['selectQty']) {
+							throw new \Exception('Insufficient stock for product ' . $item['product']['id']);
+						}
+						$stock->stock -= $item['selectSku']['selectQty'];
+						$stock->save();
+					}
+				}
+			}
+			OrderDetail::insert($orderDetails);
+			DB::commit();
+			return response()->json([
+				'id' => $session->id,
+				'url' => $session->url,
+			]);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return response()->json(['error' => 'Order creation failed: ' . $e->getMessage()], 500);
+		}
+	}
 
-        OrderDetail::insert($orderDetails);
-
-        return OrderShowResource::make($order );
-    }
 
     public function show(string $id)
     {

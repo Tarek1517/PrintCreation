@@ -24,14 +24,23 @@ class ProductController extends Controller
         $products = Product::query()
         ->with('category','brand')
         ->where('title', 'like', '%' . $request->input('search') . '%')
+		// Filter by category slug or include child categories
+        ->when($request->input('category'), function ($query, $categorySlug) {
+            $category = Category::where('slug', $categorySlug)->first();
+            if ($category) {
+                $query->where(function ($query) use ($category) {
+                    $query->where('category_id', $category->id)
+                          ->orWhereHas('category', function ($query) use ($category) {
+                              $query->whereIn('id', $category->children->pluck('id'));
+                          });
+                });
+            }
+        })
         ->when($request->input('category_id'), function ($query, $categoryId) {
             return $query->where('category_id', $categoryId);
         })
-        ->when($request->input('brand_id'), function ($query, $categoryId) {
-            return $query->where('brand_id', $categoryId);
-        })
         ->latest()
-        ->paginate(2);
+        ->paginate(16);
         return ProductListResource::collection($products);
     }
 
