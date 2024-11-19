@@ -13,9 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
     const nav = ref({ isMobileMenu: false });
 
     async function fetchUser() {
-        const storedUser = JSON.parse(await getLocalStorage());
-
-        if (storedUser) {
+        const user = JSON.parse(await getLocalStorage());
+        if (user) {
             try {
                 const { data } = await sendRequest({
                     method: 'get',
@@ -24,10 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
                         Authorization: `Bearer ${storedUser?.token}`,
                     },
                 });
-
                 if (data) {
-                    user.value = data;
-                    tokenStore.setAuthUser(data);
                 } else {
                     await clearLocalStorage();
                 }

@@ -28,7 +28,7 @@ onClickOutside(target, () => { isPreview.value = false })
 watch(search, getProducts, { deep: true });
 </script>
 <template>
-  <div class="flex items-center  relative w-full max-w-xl border border-primary">
+  <div class="flex items-center  relative  border border-primary">
     <input v-model="search" type="text"  class="py-2.5 pl-3 border border-secondary rounded focus:outline-0 lg:w-full " placeholder="Search Sign & Print Creation...." />
     <RouterLink
         :to="{

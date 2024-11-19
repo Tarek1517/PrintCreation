@@ -35,13 +35,12 @@ const getCompany = async() => {
 		courierCompany.value = response.data;
 	}
 }
-
 const selectedCourier = ref(null);
 
 // order
 const form = ref({
- 	user_id: computed(() => authStore?.user?.user?.id),
-  payment_method: 'cod',
+ user_id: computed(() => authStore?.user?.user?.id),
+  payment_method: 'stripe',
   shipping_area_id: null,
   order_type: 'customer',
   delivery_charge: computed(() => selectedCourier?.value?.delivery_charge),
@@ -50,40 +49,36 @@ const form = ref({
   courier_company_id: computed(() => selectedCourier?.id)
 });
 
-const onOrderSubmit = async () => {
-  const response = await sendRequest({
-    url:'/frontend/v1/save-order' ,
-    method: 'POST',
-    data: form.value,
-    headers: {
-      authorization: `Bearer ${authStore?.user?.token}`,
-    },
-  });
-  if (response){
-    toast.success('Order placed successfully');
-    setTimeout(() => {
-      router.push('/dashboard');
-      cartStore.clearCart();
-    }, 1000);
-  }
-}
 
-// import { StripeCheckout } from '@vue-stripe/vue-stripe';
-// const publishableKey = "jfdhuvbheshgvbuiedhyn ze";
-// const lineItems = ref([
-//   {
-//     price: 'some-price-id', 
-//     quantity: 1,
-//   },
-// ]);
-// const successURL = 'your-success-url';
-// const cancelURL = 'your-cancel-url';
-// const checkoutRef = ref(null);
-// const submit = () => {
-//   checkoutRef.value.redirectToCheckout();
-// };
+const paymentAndPlaceOrder = async () => {
+  try {
+    const response = await sendRequest({
+      method: "post",
+      url: "/frontend/v1/save-order",
+	  data: form.value,
+	  headers: {
+		authorization: `Bearer ${authStore?.user?.token}`,
+	},
+    });
+    if (response?.data) {
+	  cartStore.clearCart();
+      window.location.href = response.data.url;
+    } else {
+      console.error("Stripe session URL not found in response:", response);
+    }
+  } catch (error) {
+    console.error("Error initiating payment:", error);
+  }
+};
 
 onMounted(() => {
+	const query = new URLSearchParams(window.location.search);
+	if (query.get("success")) {
+		toast.success('Order Placed')
+	}
+	if (query.get("canceled")) {
+		toast.info('Payment Canceled')
+	}
   getOrderArea();
   getCompany();
 })
@@ -187,19 +182,7 @@ onMounted(() => {
               </li>
             </ul>
             <div class="py-2 px-4">
-				  <!-- <div>
-					<stripe-checkout
-					ref="checkoutRef"
-					mode="payment"
-					:pk="publishableKey"
-					:line-items="lineItems"
-					:success-url="successURL"
-					:cancel-url="cancelURL"
-					@loading="v => loading = v"
-					/>
-					<button @click="submit">Pay now!</button>
-				</div> -->
-              <button @click="onOrderSubmit" class="block w-full bg-black rounded-full py-2 text-white text-center">Payment & Place Order</button>
+              <button @click="paymentAndPlaceOrder" class="block w-full bg-black rounded-full py-2 text-white text-center">Payment & Place Order</button>
             </div>
           </div>
         </div>

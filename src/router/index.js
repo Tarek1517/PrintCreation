@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import authMiddleware from '@/middleware/auth.js' 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,11 +45,22 @@ const router = createRouter({
       component:()=>import("@/views/Order/Checkout.vue")
     },
 	{
+      path: '/order-success',
+      name: 'order-success',
+      component:()=>import("@/views/Order/Success.vue")
+    },
+	{
+		path: '/order-invoice/:id',
+		name:'order-invoice',
+		component: () => import("@/views/Order/Invoice.vue")
+	},
+	{
 		path:'/:slug',
-		name:'CustomPage',
+		name:'custom-page',
 		component: () => import("@/views/CustomPage/Index.vue")
 	}
   ],
 })
 
+router.beforeEach(authMiddleware)
 export default router

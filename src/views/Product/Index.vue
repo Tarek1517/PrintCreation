@@ -1,13 +1,13 @@
 <template>
   <section>
     <container>
-      <h1 class="text-center text-5xl font-semibold py-10">All Products</h1>
+      <h1 class="text-center text-2xl lg:text-5xl font-semibold py-10">All Products</h1>
     </container>
   </section>
   <section class="pb-10">
     <container>
       <div class="flex">
-        <div class="w-1/6">
+        <div class="w-1/6 hidden lg:block" >
           <div>
             <h3 class="text-xl mb-5">Categories</h3>
             <ul class="flex flex-col gap-4">
@@ -22,7 +22,7 @@
             </ul>
           </div>
         </div>
-        <div class="w-5/6">
+        <div class="w-full lg:w-5/6">
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <ProductCard :data="product" v-for="product in  products?.data" />
           </div>
