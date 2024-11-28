@@ -1,0 +1,1 @@
+import{_ as o,k as n,j as s,g as a,a as r,e as u}from"./app-BHs_qdqJ.js";const c={};function p(_,e){const t=a("AppLayout");return r(),n(t,null,{default:s(()=>e[0]||(e[0]=[u("p",null,"Refund Request",-1)])),_:1})}const l=o(c,[["render",p]]);export{l as default};

@@ -86,7 +86,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api', 'type.admin'])-
     Route::get('/all-page-list', [PageController::class, 'allPageList']);
     Route::get('/setting', [SettingController::class, 'getAllSetting']);
     Route::post('/save-header-setting', [SettingController::class, 'saveHeaderSetting']);
-
+    Route::delete('CourierCompany/{id}', [CourierCompanyController::class, 'destroy']);
     
     Route::get('/get-all-request', [OrderController::class, 'allRequest']);
     Route::get('/delete-request/{id}', [OrderController::class, 'deleteRequest']);

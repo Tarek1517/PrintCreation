@@ -18,11 +18,11 @@ class FooterController extends Controller
     public function index()
     {
         $columns = Footer::query()->orderBy('order_number')->get();
-        
-        foreach( $columns as $column){
+
+        foreach ($columns as $column) {
             $pageIds = json_decode($column->pages);
             $pages = Page::query()->whereIn('id', $pageIds)->get();
-            
+
             $column['pages'] = $pages;
         }
 
@@ -34,19 +34,21 @@ class FooterController extends Controller
      */
     public function store(FooterRequest $request)
     {
-        $data = $request->validated();
-        $data['pages'] = json_encode($data['pages']);
-        $footer = Footer::create($data);
 
+        $data = $request->validated();
+        $count = isset($data['pages']) ? count($data['pages']) : 0;
+        $data['pages'] = json_encode($data['pages'] ?? []);
+        $footer = Footer::create($data);
         return FooterResource::make($footer);
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        
+
     }
 
     /**
@@ -67,7 +69,7 @@ class FooterController extends Controller
     public function destroy(string $id)
     {
         $footer = Footer::find($id);
-        if($footer){
+        if ($footer) {
             $footer->delete();
 
             return Response::HTTP_OK;

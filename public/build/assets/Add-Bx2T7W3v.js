@@ -1,0 +1,1 @@
+import{r as t,k as a,j as n,g as l,a as s,e as r}from"./app-BHs_qdqJ.js";import{u as p}from"./useAxios-CvYkLGhC.js";import"./index-DF90ylPP.js";const d={__name:"Add",setup(u){return p(),t({name:null,phone:null,email:null}),(m,e)=>{const o=l("AppLayout");return s(),a(o,null,{default:n(()=>e[0]||(e[0]=[r("div",null,null,-1)])),_:1})}}};export{d as default};

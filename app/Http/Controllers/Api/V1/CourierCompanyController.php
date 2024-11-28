@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CourierCompany;
 use function App\Http\Helpers\uploadFile;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourierCompanyController extends Controller
 {
@@ -48,6 +50,17 @@ class CourierCompanyController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        $CourierCom = CourierCompany::findOrFail($id);
+        if($CourierCom)
+        {
+            $image = $CourierCom->image;
+            if($image){
+                $imagePath = str_replace('/storage','public',$image);
+                Storage::delete($imagePath);
+            }
+            $CourierCom->delete();
+
+            return Response::HTTP_OK;
+        }
     }
 }

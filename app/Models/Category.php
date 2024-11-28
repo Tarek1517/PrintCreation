@@ -24,6 +24,12 @@ class Category extends Model
         'parent_id'
     ];
 
+    protected $appends = ['icon_url'];
+    public function getIconUrlAttribute()
+    {
+        return $this->icon ? env('APP_URL') . $this->icon : null;
+    }
+
     public function products() : HasMany 
     {
         return $this->hasMany(Product::class);
