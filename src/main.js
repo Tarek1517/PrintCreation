@@ -7,6 +7,9 @@ import Container from '@/Components/Container.vue'
 import 'vue3-toastify/dist/index.css';
 import Icon from '@/components/Icon.vue';
 import {createDataProvider} from "@/plugins/dataProvider.js";
+import 'typeface-dm-serif-text';
+import 'typeface-poppins';
+
 
 const dataProvider = createDataProvider();
 

@@ -9,7 +9,7 @@ const modules = [Pagination,Autoplay];
 const data = inject('data');
 </script>
 <template>
-  <section class="py-5">
+  <section class="pt-5 pb-5 xl:pt-10">
     <container>
       <swiper
           :spaceBetween="10"
@@ -22,10 +22,10 @@ const data = inject('data');
                   dynamicBullets: true,
             }"
           :modules="modules"
-          class="mySwiper py-5 rounded-2xl overflow-hidden"
+          class="mySwiper py-10 overflow-hidden rounded-xl"
       >
         <SwiperSlide v-for="slider in data?.hero_slider">
-          <a :href="slider?.url" class="block w-full h-40 lg:h-[550px] rounded-2xl overflow-hidden">
+          <a :href="slider?.url" class="block w-full h-48 lg:h-[400px] object-fit:cover overflow-hidden ">
             <img class="w-full h-full" :src="slider?.image_url" alt="">
           </a>
         </SwiperSlide>

@@ -73,17 +73,17 @@ onMounted(async () => {
             <img class="w-full h-full object-cover" src="https://cdn-icons-png.freepik.com/256/15232/15232242.png?uid=R102446229&ga=GA1.1.1386564851.1716744340&semt=ais_hybrid">
           </div>
           <div class="pl-5">
-            <h3 class="text-xl lg:text-3xl font-semibold">{{authStore?.user?.user?.name}}</h3>
-            <p class="mb-2 text-sm">{{moment(customer?.created_at).format('MMMM Do YYYY')}}</p>
+            <h3 class="text-xl lg:text-3xl font-semibold font-serif">{{authStore?.user?.user?.name}}</h3>
+            <p class="mb-2 text-sm font-momo">{{moment(customer?.created_at).format('MMMM Do YYYY')}}</p>
             <span class="inline-flex items-center gap-2 border rounded-md px-2 py-1 text-xs">
-              <Icon name="mdi:check-decagram" class="text-blue-600 text-lg" />
+              <Icon name="mdi:check-decagram" class="text-blue-600 text-lg font-serif" />
               verified account
             </span>
           </div>
         </div>
       </div>
       <Container class="pb-10 max-w-xl mt-10">
-        <ul class="flex items-center border-b border-gray-300 mb-4 bg-white">
+        <ul class="flex items-center border-b border-gray-300 mb-4 bg-white font-mono">
           <li  v-for="(tab, index) in tabs" :key="index">
             <button
                 @click="activeTab = index"
@@ -110,7 +110,7 @@ onMounted(async () => {
               <div class="min-w-28 max-w-28 h-auto bg-slate-200 rounded-md overflow-hidden">
                 <!-- <img v-if="order?.orders[0]?.order_details[0]?.product?.cover_image_url" :src="order?.orders[0]?.order_details[0]?.product?.cover_image_url" class="w-full h-full"> -->
               </div>
-              <div class="w-full relative">
+              <div class="w-full relative font-serif">
                 <RouterLink :to="`/order-invoice/${order?.id}`" class="absolute top-0 right-0 block border border-gray-300 px-2 py-1 text-xs rounded">view</RouterLink>
                 <div>
                   <h3 class="text-lg">{{order?.order_code}}</h3>
@@ -129,7 +129,7 @@ onMounted(async () => {
             <p class="h-5 mb-2 w-40 bg-slate-300 rounded animate-pulse"></p>
             <p class="h-5 w-56 bg-slate-300 rounded animate-pulse"></p>
           </div>
-          <div v-else class="border border-gray-300 rounded-lg p-4 mb-5 bg-white">
+          <div v-else class="border border-gray-300 rounded-lg p-4 mb-5 bg-white font-serif">
             <h3 class="text-xl font-semibold mb-2">{{customer?.name}}</h3>
             <div class="flex items-center gap-1 mb-1">
               <Icon name="hugeicons:call" />
